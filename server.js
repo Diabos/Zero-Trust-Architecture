@@ -73,19 +73,22 @@ app.get('/api/dashboard', (req, res) => {
 // Get servers configuration (placeholder)
 app.get('/api/servers', (req, res) => {
   const serverConfig = {
-    host: process.env.TARGET_SERVER_HOST || 'example.com',
+    host: process.env.TARGET_SERVER_HOST || 'demo-server.local',
     username: process.env.TARGET_SERVER_USER || 'ubuntu',
     port: process.env.TARGET_SERVER_PORT || 22,
   };
+  
+  const isConfigured = process.env.TARGET_SERVER_HOST && process.env.TARGET_SERVER_USER && process.env.TARGET_SERVER_SSH_KEY;
+  
   res.json({
     servers: [
       {
         id: 1,
-        name: process.env.TARGET_SERVER_NAME || 'Production Server',
+        name: process.env.TARGET_SERVER_NAME || (isConfigured ? 'Production Server' : '🎬 Demo Server'),
         host: serverConfig.host,
         username: serverConfig.username,
         port: serverConfig.port,
-        status: 'connected',
+        status: isConfigured ? 'connected' : 'demo',
       },
     ],
   });
@@ -102,10 +105,39 @@ app.post('/api/execute', async (req, res) => {
     port: process.env.TARGET_SERVER_PORT || 22,
   };
 
+  // DEMO MODE: If no server configured, return mock data
   if (!config.host || !config.username || !config.privateKeyPath) {
-    return res.status(400).json({
-      error: 'Server configuration incomplete. Check .env file.',
-    });
+    res.json({ message: 'Demo Mode: Simulating hardening execution...' });
+    
+    // Simulate execution with mock data
+    const execution = {
+      id: executionHistory.length + 1,
+      timestamp: new Date().toISOString(),
+      serverId,
+      result: {
+        success: true,
+        stdout: `
+✓ SSH Hardening: Disabled root login
+✓ SSH Hardening: Enforced key-based authentication
+✓ Firewall (UFW): Enabled and configured (default deny)
+✓ Fail2Ban: Installed and running
+✓ Audit Logging: auditd enabled
+✓ Kernel Hardening: SYN protection enabled
+✓ File Permissions: Secured sudoers and SSH configs
+
+Hardening completed successfully in demo mode!
+(To enable real hardening, configure TARGET_SERVER_HOST, TARGET_SERVER_USER, and TARGET_SERVER_SSH_KEY)
+        `,
+        stderr: '',
+        code: 0,
+      }
+    };
+    
+    executionHistory.unshift(execution);
+    if (executionHistory.length > 50) {
+      executionHistory = executionHistory.slice(0, 50);
+    }
+    return;
   }
 
   try {
