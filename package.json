@@ -1,24 +1,24 @@
 {
-  "name": "aztih-dashboard",
+  "name": "aztih-hardening-runner",
   "version": "1.0.0",
-  "description": "Zero-Trust Infrastructure Hardening Web Dashboard",
-  "main": "server.js",
+  "description": "CLI tool to run Linux hardening steps over SSH with verification reports",
+  "main": "scripts/cli.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
-    "build": "echo 'No build needed'",
+    "setup": "node scripts/setup.js",
+    "start": "node scripts/cli.js",
+    "status": "node scripts/cli.js status",
+    "plan": "node scripts/cli.js plan",
+    "demo": "node scripts/cli.js demo",
+    "apply": "node scripts/cli.js apply",
     "test": "echo 'Tests not configured yet'"
   },
   "keywords": ["security", "hardening", "zero-trust", "infrastructure"],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
     "dotenv": "^16.0.3",
-    "node-ssh": "^13.1.0",
-    "cors": "^2.8.5",
-    "body-parser": "^1.20.2"
+    "node-ssh": "^13.1.0"
   },
   "devDependencies": {}
 }

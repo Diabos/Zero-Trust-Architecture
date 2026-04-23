@@ -63,3 +63,6 @@ out/
 # Test coverage
 coverage/
 .nyc_output/
+
+# Generated hardening evidence
+reports/

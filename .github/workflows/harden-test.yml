@@ -25,8 +25,11 @@ jobs:
       - name: Verify script syntax
         run: bash -n scripts/zero_trust_harden.sh
       
-      - name: Verify server.js syntax
-        run: node -c server.js
+      - name: Verify CLI syntax
+        run: node -c scripts/cli.js
+      
+      - name: Verify core module syntax
+        run: node -c src/hardening.js
       
       - name: Check package.json
         run: node -e "require('./package.json')"
